@@ -1,0 +1,57 @@
+@mixin stdinput {
+  padding: 10px 20px;
+  outline: 0;
+  border: none;
+
+  font-size: 14px;
+  line-height: 24px;
+  width: 100%;
+  border-radius: 2px;
+  margin: 10px 0;
+}
+
+input:not([type="checkbox"]).styled {
+  @include stdinput;
+  box-shadow: rgba(0,0,0,.12) 0 2px 3px inset;
+  background: rgba(0,0,0,.02);
+
+  transition: background 0.2s ease;
+
+  box-sizing: border-box;
+
+  &:focus {
+    background: rgba(0,0,0,.06);
+  }
+}
+
+button.styled {
+  @include stdinput;
+  box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+  background: rgba(0,0,0,.02);
+
+  transition: background 0.2s ease;
+
+  &:hover, &:focus {
+    background: rgba(0,0,0,.06);
+  }
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .material-icons {
+    font-size: 20px;
+    line-height: 24px;
+    margin-right: 5px;
+  }
+}
+
+table.styled {
+  width: 100%;
+
+  td.center {
+    text-align: center;
+  }
+}

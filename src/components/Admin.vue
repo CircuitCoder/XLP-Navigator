@@ -19,7 +19,7 @@
       <div class="header">人员设置</div>
       <table class="styled">
         <thead>
-          <td><span class="member-name">名</span></td>
+          <td><span class="member-name">名前</span></td>
           <td>称谓</td>
           <td class="center">信息</td>
           <td class="center">转账</td>

@@ -15,6 +15,7 @@
       请点击右上方的导航按钮进入其他页面
       <div class="nav-hints">
         <div class="nav-hint"><i class="material-icons">home</i> - 欢迎页</div>
+        <div class="nav-hint"><i class="material-icons">store</i> - 商城</div>
         <div class="nav-hint"><i class="material-icons">settings</i> - 组设置</div>
         <div class="nav-hint"><i class="material-icons">flight_land</i> - 登出</div>
       </div>

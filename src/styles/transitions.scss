@@ -20,3 +20,11 @@
 .opacity-enter, .opacity-leave-to {
   opacity: 0;
 }
+
+.page-enter, .page-leave-to {
+  opacity: 0;
+}
+
+.page-leave-active {
+  position: absolute;
+}

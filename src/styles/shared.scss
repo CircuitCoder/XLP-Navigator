@@ -68,10 +68,16 @@ table.styled {
 
 .input-btn-group {
   display: flex;
+  align-items: center;
 
   > button.styled, > input.styled {
     margin-left: 5px;
     margin-right: 5px;
+
+    &.no-margin {
+      margin-left: 0;
+      margin-right: 0;
+    }
 
     &:first-child {
       margin-left: 0;
@@ -89,6 +95,15 @@ table.styled {
   > button.styled {
     flex: 0;
     white-space: nowrap;
+  }
+
+  .input-icon {
+    position: absolute;
+    margin-left: 10px;
+    
+    + input.styled {
+      padding-left: 40px;
+    }
   }
 }
 
@@ -111,4 +126,92 @@ table.styled {
   line-height: 30px;
   font-size: 24px;
   margin-bottom: 14px;
+}
+
+.pager {
+  button.styled.page {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 10px 15px;
+    margin: 0 5px;
+
+    &:focus {
+      background: rgba(0,0,0,.02);
+    }
+
+    &.selected {
+      background: rgba(0,0,0,.16);
+    }
+
+    transition: opacity 0.2s, transform 0.2s, background 0.2s;
+    display: inline;
+    width: initial;
+  }
+
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 100%;
+  transition: top 0.2s;
+
+  .bottom-sheet-handle-container {
+    position: absolute;
+    bottom: 100%;
+    margin: auto;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+
+    pointer-events: none;
+
+    .bottom-sheet-handle {
+      display: inline-block;
+      font-weight: bold;
+      padding: 20px 40px;
+      color: rgba(0,0,0,.54);
+      background: rgba(255,255,255,0.95);
+      border-radius: 2px;
+      cursor: pointer;
+
+      border-bottom: 0;
+
+      pointer-events: all;
+
+      box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+    }
+  }
+
+  .bottom-sheet-content {
+    position: relative;
+    box-shadow: rgba(0,0,0,.12) 0 2px 3px;
+    position: absolute;
+
+    height: 50vh;
+
+    background: rgba(255,255,255,0.95);
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  &.extended {
+    top: 50%;
+  }
+
+  z-index: 3000;
+}
+
+.bottom-sheet-backboard {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,.12);
 }

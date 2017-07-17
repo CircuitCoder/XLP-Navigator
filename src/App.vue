@@ -6,9 +6,15 @@
           {{ title }}
         </div>
 
+        <div class="input-btn-group header-search" :class="{ hidden: !search }">
+          <i class="material-icons input-icon">search</i>
+          <input class="styled no-margin" v-model="searchContent" :disabled="!search">
+        </div>
+
         <div class="util" v-if="user">
           <nav>
             <router-link tag="i" :to ="{ name: 'Home' }" class="material-icons">home</router-link>
+            <router-link tag="i" :to ="{ name: 'Shop', query: { page: 1 } }" class="material-icons">store</router-link>
             <router-link tag="i" :to ="{ name: 'Admin' }" v-if="grants('admin')" class="material-icons">settings</router-link>
             <i class="material-icons" @click="logout">flight_land</i>
           </nav>
@@ -38,6 +44,7 @@
 import router from './router';
 
 import backend from './backend';
+import util from './util';
 
 let infocount = 0;
 
@@ -48,6 +55,7 @@ export default {
     onTop: true,
     title: '欢迎!',
     search: false,
+    searchContent: '',
 
     infos: [],
 
@@ -64,14 +72,40 @@ export default {
     else backend.onUser(user => this.login(user));
   },
 
+  watch: {
+    searchContent() {
+      if(!this.search) return;
+
+      util.debounce('search', () => {
+        const nr = util.cpRoute(this.$route);
+        nr.query.search = this.searchContent;
+        nr.query.page = 1;
+        this.$router.push(nr);
+      }, 500);
+    },
+  },
+
   methods: {
-    loading() {
+    loading(resetSearch = true) {
       this.title = '加载中...';
-      this.search = false;
+      if(resetSearch) {
+        this.search = false;
+        this.searchContent = '';
+      }
     },
 
-    setTitle(title) {
+    setTitle(title, resetSearch = true) {
       this.title = title;
+      if(resetSearch) {
+        this.search = false;
+        this.searchContent = '';
+      }
+    },
+
+    setSearch() {
+      this.search = true;
+      this.searchContent = this.$route.query.search;
+      if(!this.searchContent) this.searchContent = '';
     },
 
     info(info, delay = 2000) {
@@ -169,7 +203,6 @@ body {
   font-weight: bold;
   font-size: 18px;
   line-height: 60px;
-  flex: 1;
 }
 
 .info-list {
@@ -215,6 +248,17 @@ body {
         opacity: 0.87;
       }
     }
+  }
+}
+
+.header-search {
+  flex: 1;
+  margin: 0 20px;
+
+  transition: opacity 0.2s;
+
+  &.hidden {
+    opacity: 0;
   }
 }
 </style>

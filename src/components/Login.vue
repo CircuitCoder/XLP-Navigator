@@ -1,5 +1,5 @@
 <template>
-  <div class="content" v-if="loaded">
+  <div class="content">
     <div class="login-dialog">
       <div class="login-internal">
         <input class="styled" v-model="username" type="text" placeholder="用户名" @keyup.enter="login">
@@ -16,24 +16,14 @@ import router from '../router';
 
 export default {
   data: () => ({
-    loaded: false,
-
     username: '',
     pass: '',
   }),
+
   created() {
-    this.$parent.loading();
-
-    backend.get('/auth').then((resp) => {
-      if(resp._id) {
-        this.$parent.login(resp);
-        router.replace({ name: 'Home' });
-      }
-
-      this.$parent.setTitle('登陆');
-      this.loaded = true;
-    });
+    this.$parent.setTitle('登陆');
   },
+
   methods: {
     login() {
       if(!this.username) {

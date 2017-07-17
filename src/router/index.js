@@ -5,9 +5,11 @@ import Home from '../components/Home';
 import Login from '../components/Login';
 import Admin from '../components/Admin';
 
+import backend from '../backend';
+
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -27,3 +29,25 @@ export default new Router({
     },
   ],
 });
+
+let restored = false;
+
+router.beforeEach((to, from, next) => {
+  if(restored) {
+    next();
+    return;
+  }
+
+  restored = true;
+
+  backend.get('/auth').then((resp) => {
+    if(resp._id) {
+      backend.registerUser(resp);
+
+      if(to.name === 'Login') next({ name: 'Home' });
+      else next();
+    } else next({ name: 'Login' });
+  });
+});
+
+export default router;

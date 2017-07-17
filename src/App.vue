@@ -8,7 +8,8 @@
 
         <div class="util" v-if="user">
           <nav>
-            <router-link tag="i" :to ="{ name: 'Admin' }" v-if="grants('admin')" class="material-icons">assignment_ind</router-link>
+            <router-link tag="i" :to ="{ name: 'Home' }" class="material-icons">home</router-link>
+            <router-link tag="i" :to ="{ name: 'Admin' }" v-if="grants('admin')" class="material-icons">settings</router-link>
             <i class="material-icons" @click="logout">flight_land</i>
           </nav>
         </div>
@@ -16,7 +17,7 @@
     </div>
 
     <div class="router-slot">
-      <transition name="opacity">
+      <transition name="opacity" mode="out-in">
         <router-view
           :user="user"
           ></router-view>
@@ -58,7 +59,9 @@ export default {
       this.onTop = window.scrollY === 0;
     });
 
-    router.replace({ name: 'Login' });
+    const u = backend.fetchUser();
+    if(u) this.login(u);
+    else backend.onUser(user => this.login(user));
   },
 
   methods: {
@@ -95,6 +98,7 @@ export default {
     logout() {
       backend.delete('/auth').then(() => {
         this.user = null;
+        backend.detachUser();
         router.push({ name: 'Login' });
       });
     },
@@ -156,14 +160,6 @@ body {
   }
 }
 
-.content {
-  max-width: 1080px;
-  width: 100vw;
-  margin: 0 auto;
-  padding: 0 40px;
-  box-sizing: border-box;
-}
-
 .router-slot {
   margin-top: 120px;
   overflow-x: hidden;
@@ -177,7 +173,7 @@ body {
 }
 
 .info-list {
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 20px;
   width: 200px;
@@ -201,6 +197,9 @@ body {
     box-shadow: rgba(0,0,0,.12) 0 4px 6px;
 
     cursor: pointer;
+
+    transition: transform 0.5s, opacity 0.5s;
+    display: block;
   }
 }
 

@@ -2,6 +2,8 @@ import request from 'superagent';
 import config from './config';
 
 export default {
+  userListeners: [],
+
   async get(dir, queries) {
     const resp = await request
     .get(`${config.endpoint}${dir}`)
@@ -26,5 +28,22 @@ export default {
     .withCredentials();
 
     return resp.body;
+  },
+
+  registerUser(user) {
+    this.user = user;
+    this.userListeners.forEach(cb => cb(this.user));
+  },
+
+  detachUser() {
+    this.user = null;
+  },
+
+  fetchUser() {
+    return this.user;
+  },
+
+  onUser(cb) {
+    this.userListeners.push(cb);
   },
 };

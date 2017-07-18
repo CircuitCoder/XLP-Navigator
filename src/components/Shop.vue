@@ -36,7 +36,7 @@
       <div class="bottom-sheet-handle-container">
         <div class="bottom-sheet-handle" @click="toggleCart()">购物车</div>
       </div>
-      <div class="bottom-sheet-content content">
+      <div class="bottom-sheet-content">
         <div class="cart-status">
           <div class="content">
             <div class="cart-tot">
@@ -297,13 +297,13 @@ export default {
   top: 0;
   left: 0;
   right: 0;
+  border-bottom: rgba(0,0,0,.12) 1px solid;
 
   > .content {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     height: 80px;
-    border-bottom: rgba(0,0,0,.12) 1px solid;
 
     .cart-tot {
       display: flex;
@@ -329,6 +329,8 @@ export default {
   right: 0;
   overflow-y: visible;
   overflow-x: hidden;
+
+  padding-top: 20px;
 
   .cart-item-price {
     opacity: 0.3;

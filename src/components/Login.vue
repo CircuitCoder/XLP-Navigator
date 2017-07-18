@@ -39,7 +39,7 @@ export default {
         if(!resp.success)
           this.$parent.info('用户名或密码错误');
         else {
-          this.$parent.login(resp.user);
+          backend.registerUser(resp.user);
           router.replace({ name: 'Home' });
         }
       });

@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import Home from '../components/Home';
 import Login from '../components/Login';
 import Admin from '../components/Admin';
+import Account from '../components/Account';
 import Shop from '../components/Shop';
 
 import backend from '../backend';
@@ -27,6 +28,11 @@ const router = new Router({
       path: '/admin',
       name: 'Admin',
       component: Admin,
+    },
+    {
+      path: '/account',
+      name: 'Account',
+      component: Account,
     },
     {
       path: '/shop',

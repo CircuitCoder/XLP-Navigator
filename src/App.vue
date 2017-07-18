@@ -11,14 +11,17 @@
           <input class="styled no-margin" v-model="searchContent" :disabled="!search">
         </div>
 
-        <div class="util" v-if="user">
-          <nav>
-            <router-link tag="i" :to ="{ name: 'Home' }" class="material-icons">home</router-link>
-            <router-link tag="i" :to ="{ name: 'Shop', query: { page: 1 } }" class="material-icons">store</router-link>
-            <router-link tag="i" :to ="{ name: 'Admin' }" v-if="grants('admin')" class="material-icons">settings</router-link>
-            <i class="material-icons" @click="logout">flight_land</i>
-          </nav>
-        </div>
+        <transition name="opacity">
+          <div class="util" v-if="user">
+            <nav>
+              <router-link tag="i" :to ="{ name: 'Home' }" class="material-icons">home</router-link>
+              <router-link tag="i" :to ="{ name: 'Shop', query: { page: 1 } }" class="material-icons">store</router-link>
+              <router-link tag="i" :to ="{ name: 'Admin' }" v-if="grants('admin')" class="material-icons">settings</router-link>
+              <router-link tag="i" :to ="{ name: 'Account' }" class="material-icons">person</router-link>
+              <i class="material-icons" @click="logout">flight_land</i>
+            </nav>
+          </div>
+        </transition>
       </div>
     </div>
 

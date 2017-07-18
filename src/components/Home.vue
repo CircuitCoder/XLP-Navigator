@@ -17,6 +17,7 @@
         <div class="nav-hint"><i class="material-icons">home</i> - 欢迎页</div>
         <div class="nav-hint"><i class="material-icons">store</i> - 商城</div>
         <div class="nav-hint"><i class="material-icons">settings</i> - 组设置</div>
+        <div class="nav-hint"><i class="material-icons">person</i> - 账户</div>
         <div class="nav-hint"><i class="material-icons">flight_land</i> - 登出</div>
       </div>
     </div>

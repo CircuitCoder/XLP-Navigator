@@ -32,9 +32,7 @@
 
     <div class="info-list">
       <transition-group name="info">
-        <div class="info" v-for="i of infos" :key="i.id" @click="uninfo(i.id)">
-          {{ i.msg }}
-        </div>
+        <div class="info" v-for="i of infos" :key="i.id" @click="uninfo(i.id)">{{ i.msg }}</div>
       </transition-group>
     </div>
   </div>
@@ -210,13 +208,13 @@ body {
   bottom: 20px;
   right: 20px;
   width: 200px;
+  z-index: 5000;
 
   .info {
     font-weight: bold;
     font-size: 14px;
     color: rgba(0,0,0,.54);
     background: rgba(255,255,255,0.8);
-    z-index: 1000;
 
     word-break: break-word;
 
@@ -233,6 +231,8 @@ body {
 
     transition: transform 0.5s, opacity 0.5s;
     display: block;
+
+    white-space: pre-line;
   }
 }
 

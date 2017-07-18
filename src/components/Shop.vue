@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="item-price">
-          {{ item.price }}
+          {{ Number(item.price).toFixed(2) }}
         </div>
       </div>
     </div>
@@ -40,16 +40,16 @@
           <div class="content">
             <div class="cart-tot">
               <div class="cart-tot-hint">共计: </div>
-              <div class="cart-tot-number">{{ getTot() }}</div>
+              <div class="cart-tot-number">{{ Number(getTot()).toFixed(2) }}</div>
             </div>
-            <button class="styled cart-btn" @click="submit"><i class="material-icons">done</i> 下单</button>
+            <button class="styled cart-btn" @click="submit" :disabled="cartEmpty"><i class="material-icons">done</i> 下单</button>
           </div>
         </div>
         <div class="cart">
           <div class="content">
             <div class="cart-item" v-for="(entry, id) in cart" :key="id">
               <div class="cart-item-name">{{ entry.item.name }}</div>
-              <div class="cart-item-price">{{ entry.item.price }}</div>
+              <div class="cart-item-price">{{ Number(entry.item.price).toFixed(2) }}</div>
               <div class="input-btn-group">
                 <button class="styled" @click="del(entry.item)">-</button>
                 <input class="styled cart-item-count" disabled v-model="entry.count">
@@ -139,11 +139,31 @@ export default {
     },
 
     submit() {
-      // TODO: impl
+      const items = Object.keys(this.cart)
+        .map(k => this.cart[k])
+        .map(e => ({ item: e.item._id, qty: e.count }));
+      backend.post('/purchase', { items }).then((resp) => {
+        if(resp.success) {
+          this.cart = {};
+          this.cartOpen = false;
+
+          this.$parent.info(`购买成功~ 组余额为: ${resp.balance}`);
+        } else if(resp.err === 'INSUFFICIENT_FUND')
+          this.$parent.info(`余额不足: ${resp.balance}`);
+        else if(resp.err === 'NOT_ENOUGH_ITEM') {
+          const info =
+            resp.items.map(i => `${this.cart[i._id].item.name} - ${this.cart[i._id].count} / ${i.left}`)
+            .join('\n');
+          this.$parent.info(`物品库存不足，可能是您在加载列表后有其他人下单:\n ${info}`);
+        }
+      });
     },
   },
 
   computed: {
+    cartEmpty() {
+      return Object.keys(this.cart).length === 0;
+    },
     pageRange() {
       // Largest range = +- 2
       const midpoint = parseInt(this.$route.query.page, 10);

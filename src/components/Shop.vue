@@ -9,13 +9,14 @@
           <div class="item-name">
             {{ item.name }}
           </div>
+          <div class="item-remaining">剩余: {{ item.left }}</div>
           <div class="item-manip">
             <div class="item-add" @click="add(item)">
               <i class="material-icons item-cart">add_shopping_cart</i>
-              添加至购物车
+              添加{{ deltaCount === 1 ? '' : ` ${deltaCount} ` }}至购物车
             </div>
             <transition name="opacity">
-              <div class="item-dec" @click="del(item)" v-if="cart[item._id]">移除 (已有 {{ cart[item._id].count }} 个)</div>
+              <div class="item-dec" @click="del(item)" v-if="cart[item._id]">移除 {{ deltaCount === 1 ? '' : ` ${deltaCount} ` }}(已有 {{ cart[item._id].count }} 个)</div>
             </transition>
           </div>
         </div>
@@ -76,6 +77,9 @@ export default {
       cart: {},
 
       cartOpen: false,
+
+      alt: false,
+      shift: false,
     };
   },
 
@@ -85,11 +89,39 @@ export default {
     this.$parent.setSearch();
   },
 
+  beforeRouteEnter(from, to, next) {
+    next((vm) => {
+      document.addEventListener('keydown', vm.kdown);
+      document.addEventListener('keyup', vm.kup);
+    });
+  },
+
+  beforeRouteLeave(from, to, next) {
+    document.removeEventListener('keydown', this.kdown);
+    document.removeEventListener('keyup', this.kup);
+
+    next();
+  },
+
   watch: {
     $route: 'fetch',
   },
 
   methods: {
+    kdown(e) {
+      if(e.key === 'Alt')
+        this.alt = true;
+      else if(e.key === 'Shift')
+        this.shift = true;
+    },
+
+    kup(e) {
+      if(e.key === 'Alt')
+        this.alt = false;
+      else if(e.key === 'Shift')
+        this.shift = false;
+    },
+
     fetch() {
       const queries = {
         page: this.$route.query.page,
@@ -112,17 +144,19 @@ export default {
 
     add(item) {
       let idesc = this.cart[item._id];
-      if(!idesc) idesc = { item, count: 1 };
-      else idesc.count += 1;
+      if(!idesc) idesc = { item, count: this.deltaCount };
+      else idesc.count += this.deltaCount;
 
-      this.$set(this.cart, item._id, idesc);
+      if(idesc.count > idesc.item.left) idesc.count = idesc.item.left;
+      else this.$set(this.cart, item._id, idesc);
     },
 
     del(item) {
       const idesc = this.cart[item._id];
-      --idesc.count;
+      if(!idesc) return;
+      idesc.count -= this.deltaCount;
 
-      if(idesc.count === 0) delete this.cart[item._id];
+      if(idesc.count <= 0) delete this.cart[item._id];
       else this.$set(this.cart, item._id, idesc);
 
       if(Object.keys(this.cart).length === 0) this.cartOpen = false;
@@ -152,9 +186,9 @@ export default {
           this.$parent.info(`余额不足: ${resp.balance}`);
         else if(resp.err === 'NOT_ENOUGH_ITEM') {
           const info =
-            resp.items.map(i => `${this.cart[i._id].item.name} - ${this.cart[i._id].count} / ${i.left}`)
-            .join('\n');
-          this.$parent.info(`物品库存不足，可能是您在加载列表后有其他人下单:\n ${info}`);
+            resp.items.map(i => `${this.cart[i._id].item.name}\n${this.cart[i._id].count} / ${i.left}`)
+            .join('\n\n');
+          this.$parent.info(`物品库存不足，可能有人刚下单:\n\n ${info}`);
         }
       });
     },
@@ -164,6 +198,15 @@ export default {
     cartEmpty() {
       return Object.keys(this.cart).length === 0;
     },
+
+    deltaCount() {
+      if(this.shift)
+        return 20;
+      if(this.alt)
+        return 5;
+      return 1;
+    },
+
     pageRange() {
       // Largest range = +- 2
       const midpoint = parseInt(this.$route.query.page, 10);
